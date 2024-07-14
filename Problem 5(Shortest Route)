@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define loop(i,n) for(ll i=0; i<n; i++)
+
+
+// bool comparator(pair<ll,ll>& p1, pair<ll,ll>& p2){
+//     return p1.second>p2.second;
+// }
+struct comparator{
+    bool operator()(pair<ll,ll>& p1, pair<ll,ll>& p2){
+    return p1.second>p2.second;
+    }
+};
+
+
+void dikshtras(ll n, ll m, vector<ll>& distances, vector<vector<pair<ll,ll>>>& cities){
+    priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,comparator> qu;
+    qu.push(make_pair(0,0));  // first is the city number and second is the distance of the city from source city
+
+    bool visited[n] = {false};
+    while(!qu.empty()){
+
+        pair<ll,ll> current = qu.top();
+        qu.pop();
+        ll node = current.first; // node is the current city
+        // int dist = current.second;
+
+        if(!visited[node]){
+            visited[node] = true;
+
+            for(auto neigh: cities[node]){ //neigh is the neighbouring cities of the current node/city 
+                ll wt = neigh.second;
+                ll city = neigh.first; //city is a neighbouring city of the node
+
+                // if(visited[city]) continue;
+
+                if(distances[node]+wt < distances[city]){
+                    distances[city] = distances[node] + wt;
+                    qu.push({city,distances[city]});
+                }
+            }
+        }
+
+    }
+}
+
+
+ 
+int main(){
+ 
+ios_base::sync_with_stdio(false);
+cin.tie(NULL);
+ 
+    ll n,m;
+    cin>>n>>m;
+    vector<vector<pair<ll,ll>>> cities(n);
+    loop(i,m){
+        ll city1, city2, wt;
+        cin>>city1>>city2>>wt;
+        cities[city1-1].push_back({city2-1,wt}); //as the cities numbers are starting from 1 the indexes of all the arrays involving city must be subtracted by 1
+        // cities[city2-1].push_back({city1-1,wt});
+    }
+    // ll distances[n] = {INT_MAX}; //can't initialise all the elements with int_max in this way
+    vector<ll> distances(n,LLONG_MAX);
+    distances[0] = 0;
+    dikshtras(n,m,distances,cities);
+    loop(i,n){
+        cout<<distances[i]<<" ";
+    }
+
+}
