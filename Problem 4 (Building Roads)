@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define loop(i,n) for(int i=0; i<n; i++)
+
+
+void dfs(int node, vector<vector<int>>& graph, vector<bool>& visited){
+    visited[node] = true;
+    for(int child: graph[node]){
+        if(!visited[child]){
+            dfs(child, graph, visited);
+        }
+    }
+}
+
+ 
+int main(){
+ 
+ios_base::sync_with_stdio(false);
+cin.tie(NULL);
+ 
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>> graph(n);
+    loop(i,m){
+        int city1,city2;
+        cin>>city1>>city2;
+        graph[city1-1].push_back(city2-1);
+        graph[city2-1].push_back(city1-1);
+    }
+
+    vector<bool> visited(n,false);
+    vector<int> source_nodes;
+
+    loop(i,n){
+        if(!visited[i]){
+            source_nodes.push_back(i); //all the children will be visited in dfs by giving a correspoding source node therfore children doesn't enter this if block
+            dfs(i,graph,visited); //Therefore other than the children nodes i.e, source nodes only enter this block so just connecting all the source nodes will make the graph
+        }
+    }
+
+    cout<<source_nodes.size()-1<<endl; //as we make pairs of 2 in the array so total array size minus 1
+    loop(i,source_nodes.size()-1){
+        cout<<source_nodes[i]+1<<" "<<source_nodes[i+1]+1<<endl;
+    }
+
+}
